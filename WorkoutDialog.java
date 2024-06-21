@@ -27,6 +27,10 @@ public class WorkoutDialog extends JDialog {
         tabbedPane.addTab("Barbell Squat", squatPanel);
 
         JButton completeButton = new JButton("Complete Workout");
+        completeButton.setForeground(Color.WHITE);
+        // background color dark navy
+        completeButton.setBackground(new Color(10, 10, 100));
+        completeButton.setFont(new Font("Arial", Font.BOLD, 14));
         completeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 printWorkoutDetails();
@@ -46,6 +50,7 @@ public class WorkoutDialog extends JDialog {
 
     private JPanel createExercisePanel(String imagePath) {
         JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -58,9 +63,14 @@ public class WorkoutDialog extends JDialog {
         gbc.gridwidth = 1;
 
         JButton addSetButton = new JButton("Add Set");
+        addSetButton.setBackground(new Color(10, 100, 10));
+        addSetButton.setForeground(Color.WHITE);
         JButton deleteSetButton = new JButton("Delete Set");
+        deleteSetButton.setBackground(new Color(100, 10, 10));
+        deleteSetButton.setForeground(Color.WHITE);
 
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(Color.WHITE);
         buttonPanel.add(addSetButton);
         buttonPanel.add(deleteSetButton);
 
@@ -99,8 +109,8 @@ public class WorkoutDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        JTextField weightField = new JTextField(5);
-        JTextField repeatField = new JTextField(5);
+        JTextField weightField = new JTextField(8);
+        JTextField repeatField = new JTextField(8);
 
         gbc.gridx = 0;
         gbc.gridy = index; // Start from index directly
