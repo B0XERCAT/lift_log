@@ -91,6 +91,9 @@ public class WorkoutDialog extends JDialog {
             }
         });
 
+        // Add default set
+        addSet(panel, buttonPanel);
+
         return panel;
     }
 
@@ -135,7 +138,7 @@ public class WorkoutDialog extends JDialog {
     private void deleteSet(JPanel panel, JPanel buttonPanel) {
         int index = getNextIndex(panel, buttonPanel) - 1;
 
-        if (index > 0) {
+        if (index > 1) { // Ensure at least one set remains
             List<Component> componentsToRemove = new ArrayList<>();
             for (Component component : panel.getComponents()) {
                 GridBagConstraints gbc = ((GridBagLayout) panel.getLayout()).getConstraints(component);
@@ -158,6 +161,8 @@ public class WorkoutDialog extends JDialog {
 
             panel.revalidate();
             panel.repaint();
+        } else {
+            JOptionPane.showMessageDialog(this, "There should be at least 1 set.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
