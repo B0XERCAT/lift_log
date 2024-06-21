@@ -121,11 +121,28 @@ public class WorkoutDialog extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
 
+        if (index == 1) {
+            JLabel weightLabel = new JLabel("Weight (kg)");
+            weightLabel.setForeground(Color.GRAY);
+            weightLabel.setFont(new Font("Arial", Font.BOLD, 12));
+            weightLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            gbc.gridx = 1;
+            gbc.gridy = index + 2; // Adjust to start from the third row
+            panel.add(weightLabel, gbc);
+
+            JLabel repeatLabel = new JLabel("Repeat");
+            repeatLabel.setForeground(Color.GRAY);
+            repeatLabel.setFont(new Font("Arial", Font.BOLD, 12));
+            repeatLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            gbc.gridx = 2;
+            panel.add(repeatLabel, gbc);
+        }
+
         JTextField weightField = new JTextField(8);
         JTextField repeatField = new JTextField(8);
 
         gbc.gridx = 0;
-        gbc.gridy = index + 2; // Adjust to start from the third row
+        gbc.gridy = index + 3; // Adjust to start from the fourth row
         panel.add(new JLabel(String.valueOf(index)), gbc);
 
         gbc.gridx = 1;
@@ -136,7 +153,7 @@ public class WorkoutDialog extends JDialog {
 
         // Move button panel down
         gbc.gridx = 0;
-        gbc.gridy = index + 3;
+        gbc.gridy = index + 4;
         gbc.gridwidth = 3;
         panel.add(buttonPanel, gbc);
 
@@ -151,7 +168,7 @@ public class WorkoutDialog extends JDialog {
             List<Component> componentsToRemove = new ArrayList<>();
             for (Component component : panel.getComponents()) {
                 GridBagConstraints gbc = ((GridBagLayout) panel.getLayout()).getConstraints(component);
-                if (gbc.gridy == index + 2) {
+                if (gbc.gridy == index + 3) {
                     componentsToRemove.add(component);
                 }
             }
@@ -164,7 +181,7 @@ public class WorkoutDialog extends JDialog {
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.insets = new Insets(5, 5, 5, 5);
             gbc.gridx = 0;
-            gbc.gridy = index + 2;
+            gbc.gridy = index + 3;
             gbc.gridwidth = 3;
             panel.add(buttonPanel, gbc);
 
@@ -180,8 +197,8 @@ public class WorkoutDialog extends JDialog {
         for (Component component : panel.getComponents()) {
             if (component != buttonPanel) {
                 GridBagConstraints gbc = ((GridBagLayout) panel.getLayout()).getConstraints(component);
-                if (gbc.gridy >= maxIndex + 2) { // Adjust to start from the third row
-                    maxIndex = gbc.gridy + 1 - 2;
+                if (gbc.gridy >= maxIndex + 3) { // Adjust to start from the fourth row
+                    maxIndex = gbc.gridy + 1 - 3;
                 }
             }
         }
