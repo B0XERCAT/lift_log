@@ -81,7 +81,9 @@ public class ResultDialog extends JDialog {
     infoButton.setFont(new Font("Arial", Font.BOLD, 14));
     infoButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        // TODO: add action here
+        // open standard info dialog
+        StandardInfoDialog standardInfoDialog = new StandardInfoDialog(parent);
+        standardInfoDialog.setVisible(true);
       }
     });
     infoButton.setAlignmentX(CENTER_ALIGNMENT);
