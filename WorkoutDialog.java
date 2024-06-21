@@ -131,15 +131,20 @@ public class WorkoutDialog extends JDialog {
 
         if (index == 1) {
             JLabel weightLabel = new JLabel("Weight (kg)");
+            weightLabel.setHorizontalAlignment(SwingConstants.CENTER);
             weightLabel.setForeground(Color.GRAY);
             gbc.gridx = 1;
             gbc.gridy = index + 2; // Adjust to start from the third row
             panel.add(weightLabel, gbc);
 
             JLabel repeatLabel = new JLabel("Repeat");
+            repeatLabel.setHorizontalAlignment(SwingConstants.CENTER);
             repeatLabel.setForeground(Color.GRAY);
             gbc.gridx = 2;
             panel.add(repeatLabel, gbc);
+        } else if (index > 8) {
+            JOptionPane.showMessageDialog(this, "Maximum number of sets reached.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         JTextField weightField = new JTextField(8);
@@ -232,7 +237,8 @@ public class WorkoutDialog extends JDialog {
                     GridBagConstraints gbc = ((GridBagLayout) panel.getLayout()).getConstraints(component);
                     if (component instanceof JTextField && gbc.gridx == 1) {
                         JTextField weightField = (JTextField) component;
-                        JTextField repeatField = (JTextField) panel.getComponent(panel.getComponentZOrder(component) + 1);
+                        JTextField repeatField = (JTextField) panel
+                                .getComponent(panel.getComponentZOrder(component) + 1);
                         try {
                             int weight = Integer.parseInt(weightField.getText());
                             int repeats = Integer.parseInt(repeatField.getText());
