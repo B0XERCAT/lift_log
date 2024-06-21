@@ -40,7 +40,8 @@ public class WorkoutDialog extends JDialog {
         completeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 collectWorkoutDetails();
-                ResultDialog resultDialog = new ResultDialog(parent, squatSets, deadliftSets, benchSets, user);
+                dispose();
+                ResultDialog resultDialog = new ResultDialog(null, squatSets, deadliftSets, benchSets, user);
                 resultDialog.setVisible(true);
             }
         });
