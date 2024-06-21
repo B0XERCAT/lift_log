@@ -6,8 +6,12 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 public class ResultDialog extends JDialog {
+  private User user;
+
   public ResultDialog(Frame parent, List<Set> squatSets, List<Set> deadliftSets, List<Set> benchSets, User user) {
     super(parent, "Lift Log", true);
+    this.user = user;
+
     setLayout(new BorderLayout());
     getContentPane().setBackground(Color.WHITE);
 
@@ -48,21 +52,25 @@ public class ResultDialog extends JDialog {
     strengthStandardLabel.setFont(new Font("Arial", Font.BOLD, 22));
     strengthStandardLabel.setAlignmentX(CENTER_ALIGNMENT);
 
-    JLabel userInfoLabel = new JLabel("(" + user.getWeight() + "kg " + user.getGender() + ")");
-    userInfoLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+    JLabel userInfoLabel = new JLabel("(" + user.getWeight() + "kg " + user.getGender().toString().substring(0, 1)
+        + user.getGender().toString().substring(1).toLowerCase() + ")");
+    userInfoLabel.setFont(new Font("Arial", Font.PLAIN, 22));
     userInfoLabel.setAlignmentX(CENTER_ALIGNMENT);
 
     resultPanel.add(strengthStandardLabel);
     resultPanel.add(userInfoLabel);
+
+    // add some space
+    resultPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
     resultPanel.add(createStrengthLevelLabel());
 
     JPanel strengthPanel = new JPanel(new GridLayout(3, 2, 0, 0));
     strengthPanel.setBackground(Color.WHITE);
     strengthPanel.setBorder(new EmptyBorder(30, 70, 30, 50));
-    addStrengthStandard(strengthPanel, "Bench", StrengthLevel.LevelColor.BEGINNER);
-    addStrengthStandard(strengthPanel, "Deadlift", StrengthLevel.LevelColor.NOVICE);
-    addStrengthStandard(strengthPanel, "Squat", StrengthLevel.LevelColor.INTERMEDIATE);
+    addStrengthStandard(strengthPanel, "Bench", calculateStrengthLevel("bench", benchSets));
+    addStrengthStandard(strengthPanel, "Deadlift", calculateStrengthLevel("deadlift", deadliftSets));
+    addStrengthStandard(strengthPanel, "Squat", calculateStrengthLevel("squat", squatSets));
     resultPanel.add(strengthPanel);
 
     JButton infoButton = new JButton("Check Standards Info.");
@@ -126,6 +134,11 @@ public class ResultDialog extends JDialog {
     levelLabel.setFont(new Font("Arial", Font.BOLD, 18));
     levelLabel.setForeground(level.getColor());
     panel.add(levelLabel);
+  }
+
+  private StrengthLevel.LevelColor calculateStrengthLevel(String exercise, List<Set> sets) {
+    double max1RM = calculateMax1RM(sets);
+    return StrengthStandardsData.getStrengthLevel(user.getGender(), exercise, user.getWeight(), max1RM);
   }
 
   private double calculateMax1RM(List<Set> sets) {

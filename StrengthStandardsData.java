@@ -122,4 +122,68 @@ public class StrengthStandardsData {
       new StrengthStandards(115, 54, 77, 106, 140, 176),
       new StrengthStandards(120, 56, 80, 109, 143, 179)
   };
+
+  public static StrengthLevel.LevelColor getStrengthLevel(User.Gender gender, String exercise, double bodyweight,
+      double max1RM) {
+    StrengthStandards[] standards = null;
+
+    switch (gender) {
+      case MALE:
+        switch (exercise.toLowerCase()) {
+          case "deadlift":
+            standards = MALE_DEADLIFT_STANDARDS;
+            break;
+          case "bench":
+            standards = MALE_BENCH_STANDARDS;
+            break;
+          case "squat":
+            standards = MALE_SQUAT_STANDARDS;
+            break;
+        }
+        break;
+      case FEMALE:
+        switch (exercise.toLowerCase()) {
+          case "deadlift":
+            standards = FEMALE_DEADLIFT_STANDARDS;
+            break;
+          case "bench":
+            standards = FEMALE_BENCH_STANDARDS;
+            break;
+          case "squat":
+            standards = FEMALE_SQUAT_STANDARDS;
+            break;
+        }
+        break;
+    }
+
+    if (standards == null) {
+      throw new IllegalArgumentException("Invalid gender or exercise type");
+    }
+
+    for (StrengthStandards standard : standards) {
+      if (bodyweight <= standard.getBodyweight()) {
+        if (max1RM < standard.getNovice())
+          return StrengthLevel.LevelColor.BEGINNER;
+        if (max1RM < standard.getIntermediate())
+          return StrengthLevel.LevelColor.NOVICE;
+        if (max1RM < standard.getAdvanced())
+          return StrengthLevel.LevelColor.INTERMEDIATE;
+        if (max1RM < standard.getElite())
+          return StrengthLevel.LevelColor.ADVANCED;
+        return StrengthLevel.LevelColor.ELITE;
+      }
+    }
+
+    // If bodyweight is higher than any in the standards, use the last entry
+    StrengthStandards lastStandard = standards[standards.length - 1];
+    if (max1RM < lastStandard.getBeginner())
+      return StrengthLevel.LevelColor.BEGINNER;
+    if (max1RM < lastStandard.getNovice())
+      return StrengthLevel.LevelColor.NOVICE;
+    if (max1RM < lastStandard.getIntermediate())
+      return StrengthLevel.LevelColor.INTERMEDIATE;
+    if (max1RM < lastStandard.getAdvanced())
+      return StrengthLevel.LevelColor.ADVANCED;
+    return StrengthLevel.LevelColor.ELITE;
+  }
 }

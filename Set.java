@@ -9,6 +9,8 @@ public class Set {
 
   public Integer calculate1RM() {
     // using Epley formula
+    if (repeats == 1)
+      return weight;
     return (int) (weight * (1 + repeats / 30.0));
   }
 
