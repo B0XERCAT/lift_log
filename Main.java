@@ -5,6 +5,7 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 UserInfoDialog userInfoDialog = new UserInfoDialog(null);
+                userInfoDialog.setLocationRelativeTo(null);
                 userInfoDialog.setVisible(true);
             }
         });

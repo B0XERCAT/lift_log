@@ -115,7 +115,7 @@ public class ResultDialog extends JDialog {
     add(resultPanel, BorderLayout.CENTER);
 
     setSize(500, 800);
-    setLocationRelativeTo(parent);
+    setLocationRelativeTo(null);
   }
 
   private JPanel createStrengthLevelLabel() {

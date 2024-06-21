@@ -13,6 +13,8 @@ public class UserInfoDialog extends JDialog {
 
   public UserInfoDialog(Frame parent) {
     super(parent, "Lift Log", true);
+    setSize(500, 800);
+    setLocationRelativeTo(null);
 
     // Set layout and background color and padding
     setLayout(new BorderLayout());
@@ -167,7 +169,6 @@ public class UserInfoDialog extends JDialog {
 
     pack();
     setResizable(false);
-    setLocationRelativeTo(parent);
   }
 
   public User getUser() {

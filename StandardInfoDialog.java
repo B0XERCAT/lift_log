@@ -7,7 +7,7 @@ public class StandardInfoDialog extends JDialog {
     super(parent, "Strength Standards", true);
     setLayout(new BorderLayout());
     setSize(800, 880);
-    setLocationRelativeTo(parent);
+    setLocationRelativeTo(null);
 
     JTabbedPane tabbedPane = new JTabbedPane();
 
