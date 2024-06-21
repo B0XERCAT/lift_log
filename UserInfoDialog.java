@@ -9,7 +9,6 @@ public class UserInfoDialog extends JDialog {
   private JToggleButton femaleButton;
   private JTextField heightField;
   private JTextField weightField;
-  private boolean succeeded;
   private User user;
 
   public UserInfoDialog(Frame parent) {
@@ -133,8 +132,10 @@ public class UserInfoDialog extends JDialog {
         double height = Double.parseDouble(heightField.getText());
         double weight = Double.parseDouble(weightField.getText());
         user = new User(name, gender, height, weight);
-        succeeded = true;
         dispose();
+        System.out.println("User Information: " + user);
+        WorkoutDialog workoutDialog = new WorkoutDialog(null, user);
+        workoutDialog.setVisible(true);
       }
     });
     submitPanel.add(submitButton);
@@ -167,10 +168,6 @@ public class UserInfoDialog extends JDialog {
     pack();
     setResizable(false);
     setLocationRelativeTo(parent);
-  }
-
-  public boolean isSucceeded() {
-    return succeeded;
   }
 
   public User getUser() {

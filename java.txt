@@ -1,8 +1,4 @@
-1. page 구성
-UserInformation
-Exercise(File IO로 저장 로드 가능)
-Result (1RM + USER LEVEL)
-HELP
-
+0. 마지막 Dialog에서 처음 페이지로 가는 버튼 만들기
+1. File IO 추가하기 WorkoutDialog에서
 2. Input Validator 추가하기
 3. 소켓 추가하기(멀티쓰레딩)

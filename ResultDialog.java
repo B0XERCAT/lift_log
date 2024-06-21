@@ -73,7 +73,11 @@ public class ResultDialog extends JDialog {
     addStrengthStandard(strengthPanel, "Squat", calculateStrengthLevel("squat", squatSets));
     resultPanel.add(strengthPanel);
 
-    JButton infoButton = new JButton("Check Standards Info.");
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+    buttonPanel.setBackground(Color.WHITE);
+
+    JButton infoButton = new JButton("Standards Info.");
     infoButton.setPreferredSize(new Dimension(360, 40));
     infoButton.setForeground(Color.WHITE);
     // background color dark navy
@@ -87,7 +91,26 @@ public class ResultDialog extends JDialog {
       }
     });
     infoButton.setAlignmentX(CENTER_ALIGNMENT);
-    resultPanel.add(infoButton);
+
+    JButton restartButton = new JButton("Restart");
+    restartButton.setPreferredSize(new Dimension(360, 40));
+    restartButton.setForeground(Color.WHITE);
+    restartButton.setBackground(new Color(100, 10, 10));
+    restartButton.setFont(new Font("Arial", Font.BOLD, 14));
+    restartButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        dispose();
+        UserInfoDialog userInfoDialog = new UserInfoDialog(null);
+        userInfoDialog.setVisible(true);
+      }
+    });
+    restartButton.setAlignmentX(CENTER_ALIGNMENT);
+
+    buttonPanel.add(infoButton);
+    buttonPanel.add(Box.createRigidArea(new Dimension(20, 0)));
+    buttonPanel.add(restartButton);
+
+    resultPanel.add(buttonPanel);
 
     add(resultPanel, BorderLayout.CENTER);
 
