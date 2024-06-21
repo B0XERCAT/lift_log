@@ -136,6 +136,9 @@ public class WorkoutDialog extends JDialog {
             repeatLabel.setHorizontalAlignment(SwingConstants.CENTER);
             gbc.gridx = 2;
             panel.add(repeatLabel, gbc);
+        } else if (index > 8) {
+            JOptionPane.showMessageDialog(this, "There should be at most 8 sets.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
         JTextField weightField = new JTextField(8);
