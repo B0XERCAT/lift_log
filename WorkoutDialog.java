@@ -8,11 +8,17 @@ import java.util.List;
 public class WorkoutDialog extends JDialog {
     private JTabbedPane tabbedPane;
     private List<JPanel> exercisePanels;
+    private List<Set> deadliftSets;
+    private List<Set> benchSets;
+    private List<Set> squatSets;
 
     public WorkoutDialog(Frame parent, User user) {
         super(parent, "Lift Log", true);
         tabbedPane = new JTabbedPane();
         exercisePanels = new ArrayList<>();
+        deadliftSets = new ArrayList<>();
+        benchSets = new ArrayList<>();
+        squatSets = new ArrayList<>();
 
         JPanel benchPressPanel = createExercisePanel("bench.png", "Bench Press");
         JPanel deadliftPanel = createExercisePanel("deadlift.png", "Deadlift");
@@ -33,7 +39,9 @@ public class WorkoutDialog extends JDialog {
         completeButton.setFont(new Font("Arial", Font.BOLD, 14));
         completeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                printWorkoutDetails();
+                collectWorkoutDetails();
+                ResultDialog resultDialog = new ResultDialog(parent, squatSets, deadliftSets, benchSets, user);
+                resultDialog.setVisible(true);
             }
         });
 
@@ -124,21 +132,14 @@ public class WorkoutDialog extends JDialog {
         if (index == 1) {
             JLabel weightLabel = new JLabel("Weight (kg)");
             weightLabel.setForeground(Color.GRAY);
-            weightLabel.setFont(new Font("Arial", Font.BOLD, 12));
-            weightLabel.setHorizontalAlignment(SwingConstants.CENTER);
             gbc.gridx = 1;
             gbc.gridy = index + 2; // Adjust to start from the third row
             panel.add(weightLabel, gbc);
 
             JLabel repeatLabel = new JLabel("Repeat");
             repeatLabel.setForeground(Color.GRAY);
-            repeatLabel.setFont(new Font("Arial", Font.BOLD, 12));
-            repeatLabel.setHorizontalAlignment(SwingConstants.CENTER);
             gbc.gridx = 2;
             panel.add(repeatLabel, gbc);
-        } else if (index > 8) {
-            JOptionPane.showMessageDialog(this, "There should be at most 8 sets.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
         }
 
         JTextField weightField = new JTextField(8);
@@ -208,20 +209,41 @@ public class WorkoutDialog extends JDialog {
         return maxIndex > 1 ? maxIndex : 1;
     }
 
-    private void printWorkoutDetails() {
+    private void collectWorkoutDetails() {
+        deadliftSets.clear();
+        benchSets.clear();
+        squatSets.clear();
+
         for (int i = 0; i < exercisePanels.size(); i++) {
             JPanel panel = exercisePanels.get(i);
             String exerciseName = tabbedPane.getTitleAt(i);
-            System.out.println(exerciseName + ":");
-            for (Component component : panel.getComponents()) {
-                GridBagConstraints gbc = ((GridBagLayout) panel.getLayout()).getConstraints(component);
-                if (component instanceof JTextField && gbc.gridx == 1) {
-                    JTextField weightField = (JTextField) component;
-                    JTextField repeatField = (JTextField) panel.getComponent(panel.getComponentZOrder(component) + 1);
-                    System.out.println("Weight: " + weightField.getText() + " kg, Repeats: " + repeatField.getText());
+
+            List<Set> currentSets = null;
+            if (exerciseName.equals("Deadlift")) {
+                currentSets = deadliftSets;
+            } else if (exerciseName.equals("Bench Press")) {
+                currentSets = benchSets;
+            } else if (exerciseName.equals("Barbell Squat")) {
+                currentSets = squatSets;
+            }
+
+            if (currentSets != null) {
+                for (Component component : panel.getComponents()) {
+                    GridBagConstraints gbc = ((GridBagLayout) panel.getLayout()).getConstraints(component);
+                    if (component instanceof JTextField && gbc.gridx == 1) {
+                        JTextField weightField = (JTextField) component;
+                        JTextField repeatField = (JTextField) panel.getComponent(panel.getComponentZOrder(component) + 1);
+                        try {
+                            int weight = Integer.parseInt(weightField.getText());
+                            int repeats = Integer.parseInt(repeatField.getText());
+                            currentSets.add(new Set(weight, repeats));
+                        } catch (NumberFormatException e) {
+                            // Handle the case where the user has not entered valid numbers
+                            System.out.println("Invalid input, skipping...");
+                        }
+                    }
                 }
             }
-            System.out.println();
         }
     }
 }
