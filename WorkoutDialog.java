@@ -14,9 +14,9 @@ public class WorkoutDialog extends JDialog {
         tabbedPane = new JTabbedPane();
         exercisePanels = new ArrayList<>();
 
-        JPanel benchPressPanel = createExercisePanel("bench.png");
-        JPanel deadliftPanel = createExercisePanel("deadlift.png");
-        JPanel squatPanel = createExercisePanel("squat.png");
+        JPanel benchPressPanel = createExercisePanel("bench.png", "Bench Press");
+        JPanel deadliftPanel = createExercisePanel("deadlift.png", "Deadlift");
+        JPanel squatPanel = createExercisePanel("squat.png", "Barbell Squat");
 
         exercisePanels.add(benchPressPanel);
         exercisePanels.add(deadliftPanel);
@@ -48,16 +48,25 @@ public class WorkoutDialog extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
-    private JPanel createExercisePanel(String imagePath) {
+    private JPanel createExercisePanel(String imagePath, String exerciseName) {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
 
-        JLabel imageLabel = createImageLabel(imagePath, 240, 240);
+        JLabel titleLabel = new JLabel(exerciseName);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.gridwidth = 3; // Adjust gridwidth for 3 columns
+        panel.add(titleLabel, gbc);
+        gbc.gridwidth = 1;
+
+        JLabel imageLabel = createImageLabel(imagePath, 240, 240);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         gbc.gridwidth = 3; // Adjust gridwidth for 3 columns
         panel.add(imageLabel, gbc);
         gbc.gridwidth = 1;
@@ -75,7 +84,7 @@ public class WorkoutDialog extends JDialog {
         buttonPanel.add(deleteSetButton);
 
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.gridwidth = 3; // Adjust gridwidth for 3 columns
         panel.add(buttonPanel, gbc);
 
@@ -116,7 +125,7 @@ public class WorkoutDialog extends JDialog {
         JTextField repeatField = new JTextField(8);
 
         gbc.gridx = 0;
-        gbc.gridy = index; // Start from index directly
+        gbc.gridy = index + 2; // Adjust to start from the third row
         panel.add(new JLabel(String.valueOf(index)), gbc);
 
         gbc.gridx = 1;
@@ -127,7 +136,7 @@ public class WorkoutDialog extends JDialog {
 
         // Move button panel down
         gbc.gridx = 0;
-        gbc.gridy = index + 1;
+        gbc.gridy = index + 3;
         gbc.gridwidth = 3;
         panel.add(buttonPanel, gbc);
 
@@ -142,7 +151,7 @@ public class WorkoutDialog extends JDialog {
             List<Component> componentsToRemove = new ArrayList<>();
             for (Component component : panel.getComponents()) {
                 GridBagConstraints gbc = ((GridBagLayout) panel.getLayout()).getConstraints(component);
-                if (gbc.gridy == index) {
+                if (gbc.gridy == index + 2) {
                     componentsToRemove.add(component);
                 }
             }
@@ -155,7 +164,7 @@ public class WorkoutDialog extends JDialog {
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.insets = new Insets(5, 5, 5, 5);
             gbc.gridx = 0;
-            gbc.gridy = index;
+            gbc.gridy = index + 2;
             gbc.gridwidth = 3;
             panel.add(buttonPanel, gbc);
 
@@ -171,8 +180,8 @@ public class WorkoutDialog extends JDialog {
         for (Component component : panel.getComponents()) {
             if (component != buttonPanel) {
                 GridBagConstraints gbc = ((GridBagLayout) panel.getLayout()).getConstraints(component);
-                if (gbc.gridy >= maxIndex) {
-                    maxIndex = gbc.gridy + 1;
+                if (gbc.gridy >= maxIndex + 2) { // Adjust to start from the third row
+                    maxIndex = gbc.gridy + 1 - 2;
                 }
             }
         }
