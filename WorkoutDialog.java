@@ -13,17 +13,19 @@ public class WorkoutDialog extends JDialog {
     private List<Set> squatSets;
     private Boolean isValidFormat;
 
-    public WorkoutDialog(Frame parent, User user) {
+    public WorkoutDialog(Frame parent, User user, List<Set> initialSquatSets, List<Set> initialDeadliftSets,
+            List<Set> initialBenchSets) {
         super(parent, "Lift Log", true);
         tabbedPane = new JTabbedPane();
         exercisePanels = new ArrayList<>();
-        deadliftSets = new ArrayList<>();
-        benchSets = new ArrayList<>();
-        squatSets = new ArrayList<>();
+        deadliftSets = initialDeadliftSets != null ? new ArrayList<>(initialDeadliftSets) : new ArrayList<>();
+        benchSets = initialBenchSets != null ? new ArrayList<>(initialBenchSets) : new ArrayList<>();
+        squatSets = initialSquatSets != null ? new ArrayList<>(initialSquatSets) : new ArrayList<>();
+        isValidFormat = true;
 
-        JPanel benchPressPanel = createExercisePanel("bench.png", "Bench Press");
-        JPanel deadliftPanel = createExercisePanel("deadlift.png", "Deadlift");
-        JPanel squatPanel = createExercisePanel("squat.png", "Barbell Squat");
+        JPanel benchPressPanel = createExercisePanel("bench.png", "Bench Press", benchSets);
+        JPanel deadliftPanel = createExercisePanel("deadlift.png", "Deadlift", deadliftSets);
+        JPanel squatPanel = createExercisePanel("squat.png", "Barbell Squat", squatSets);
 
         exercisePanels.add(benchPressPanel);
         exercisePanels.add(deadliftPanel);
@@ -42,7 +44,7 @@ public class WorkoutDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 isValidFormat = true;
                 collectWorkoutDetails();
-                if (isValidFormat == false) {
+                if (!isValidFormat) {
                     return;
                 }
                 dispose();
@@ -62,7 +64,7 @@ public class WorkoutDialog extends JDialog {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
-    private JPanel createExercisePanel(String imagePath, String exerciseName) {
+    private JPanel createExercisePanel(String imagePath, String exerciseName, List<Set> sets) {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
@@ -114,8 +116,15 @@ public class WorkoutDialog extends JDialog {
             }
         });
 
-        // Add default set
-        addSet(panel, buttonPanel);
+        // Add sets from the provided list
+        if (sets != null && !sets.isEmpty()) {
+            for (Set set : sets) {
+                addSet(panel, buttonPanel, set);
+            }
+        } else {
+            // Add default set if no sets are provided
+            addSet(panel, buttonPanel);
+        }
 
         return panel;
     }
@@ -129,6 +138,10 @@ public class WorkoutDialog extends JDialog {
     }
 
     private void addSet(JPanel panel, JPanel buttonPanel) {
+        addSet(panel, buttonPanel, null);
+    }
+
+    private void addSet(JPanel panel, JPanel buttonPanel, Set set) {
         int index = getNextIndex(panel, buttonPanel);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -155,6 +168,11 @@ public class WorkoutDialog extends JDialog {
 
         JTextField weightField = new JTextField(8);
         JTextField repeatField = new JTextField(8);
+
+        if (set != null) {
+            weightField.setText(String.valueOf(set.getWeight()));
+            repeatField.setText(String.valueOf(set.getRepeats()));
+        }
 
         gbc.gridx = 0;
         gbc.gridy = index + 3; // Adjust to start from the fourth row
@@ -263,3 +281,6 @@ public class WorkoutDialog extends JDialog {
         }
     }
 }
+
+
+
