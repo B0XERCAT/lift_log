@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 
 public class StandardInfoDialog extends JDialog {
@@ -51,7 +52,16 @@ public class StandardInfoDialog extends JDialog {
     String[] columnNames = { "Bodyweight", "Beginner", "Novice", "Intermediate", "Advanced", "Elite" };
     Object[][] data = getData(exercise, gender);
 
-    return new JTable(data, columnNames);
+    JTable table = new JTable(data, columnNames);
+
+    // Apply center alignment to all columns
+    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+    centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+    for (int i = 0; i < table.getColumnCount(); i++) {
+      table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+    }
+
+    return table;
   }
 
   private Object[][] getData(String exercise, User.Gender gender) {
