@@ -7,11 +7,9 @@ import java.util.List;
 
 public class ResultDialog extends JDialog {
   private User user;
-
   public ResultDialog(Frame parent, List<Set> squatSets, List<Set> deadliftSets, List<Set> benchSets, User user) {
     super(parent, "Lift Log", true);
     this.user = user;
-
     setLayout(new BorderLayout());
     getContentPane().setBackground(Color.WHITE);
 
@@ -20,7 +18,7 @@ public class ResultDialog extends JDialog {
     resultPanel.setBorder(new EmptyBorder(50, 0, 30, 0));
     resultPanel.setBackground(Color.WHITE);
 
-    JLabel titleLabel = new JLabel("1RM");
+    JLabel titleLabel = new JLabel(user.getName() + "'s 1RM");
     titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
     titleLabel.setAlignmentX(CENTER_ALIGNMENT);
     resultPanel.add(titleLabel);
@@ -39,9 +37,6 @@ public class ResultDialog extends JDialog {
     JPanel oneRmPanel = new JPanel(new GridLayout(3, 2, 0, 0));
     oneRmPanel.setBackground(Color.WHITE);
     oneRmPanel.setBorder(new EmptyBorder(30, 100, 30, 60));
-    add1RMInfo(oneRmPanel, "Bench", benchSets);
-    add1RMInfo(oneRmPanel, "Deadlift", deadliftSets);
-    add1RMInfo(oneRmPanel, "Squat", squatSets);
     resultPanel.add(oneRmPanel);
 
     JSeparator separator = new JSeparator();
@@ -60,17 +55,11 @@ public class ResultDialog extends JDialog {
     resultPanel.add(strengthStandardLabel);
     resultPanel.add(userInfoLabel);
 
-    // add some space
     resultPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-
-    resultPanel.add(createStrengthLevelLabel());
 
     JPanel strengthPanel = new JPanel(new GridLayout(3, 2, 0, 0));
     strengthPanel.setBackground(Color.WHITE);
     strengthPanel.setBorder(new EmptyBorder(30, 70, 30, 50));
-    addStrengthStandard(strengthPanel, "Bench", calculateStrengthLevel("bench", benchSets));
-    addStrengthStandard(strengthPanel, "Deadlift", calculateStrengthLevel("deadlift", deadliftSets));
-    addStrengthStandard(strengthPanel, "Squat", calculateStrengthLevel("squat", squatSets));
     resultPanel.add(strengthPanel);
 
     JPanel buttonPanel = new JPanel();
@@ -80,12 +69,10 @@ public class ResultDialog extends JDialog {
     JButton infoButton = new JButton("Standards Info.");
     infoButton.setPreferredSize(new Dimension(360, 40));
     infoButton.setForeground(Color.WHITE);
-    // background color dark navy
     infoButton.setBackground(new Color(10, 10, 100));
     infoButton.setFont(new Font("Arial", Font.BOLD, 14));
     infoButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        // open standard info dialog
         StandardInfoDialog standardInfoDialog = new StandardInfoDialog(parent);
         standardInfoDialog.setVisible(true);
       }
@@ -116,27 +103,66 @@ public class ResultDialog extends JDialog {
 
     setSize(500, 800);
     setLocationRelativeTo(null);
+
+    // Start the SwingWorkers
+    new OneRMWorker(oneRmPanel, squatSets, deadliftSets, benchSets).execute();
+    new StrengthLevelWorker(strengthPanel, squatSets, deadliftSets, benchSets).execute();
   }
 
-  private JPanel createStrengthLevelLabel() {
-    JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-    panel.setBackground(Color.WHITE);
+  private class OneRMWorker extends SwingWorker<Void, Void> {
+    private JPanel panel;
+    private List<Set> squatSets;
+    private List<Set> deadliftSets;
+    private List<Set> benchSets;
 
-    StrengthLevel.LevelColor[] levels = StrengthLevel.LevelColor.values();
-    for (int i = 0; i < levels.length; i++) {
-      JLabel levelLabel = new JLabel(levels[i].getLabel());
-      levelLabel.setFont(new Font("Arial", Font.BOLD, 14));
-      levelLabel.setForeground(levels[i].getColor());
-      panel.add(levelLabel);
-
-      if (i < levels.length - 1) {
-        panel.add(new JLabel(" - "));
-      }
+    public OneRMWorker(JPanel panel, List<Set> squatSets, List<Set> deadliftSets, List<Set> benchSets) {
+      this.panel = panel;
+      this.squatSets = squatSets;
+      this.deadliftSets = deadliftSets;
+      this.benchSets = benchSets;
     }
 
-    panel.setAlignmentX(CENTER_ALIGNMENT);
-    return panel;
+    @Override
+    protected Void doInBackground() {
+      add1RMInfo(panel, "Bench", benchSets);
+      add1RMInfo(panel, "Deadlift", deadliftSets);
+      add1RMInfo(panel, "Squat", squatSets);
+      return null;
+    }
+
+    @Override
+    protected void done() {
+      panel.revalidate();
+      panel.repaint();
+    }
+  }
+
+  private class StrengthLevelWorker extends SwingWorker<Void, Void> {
+    private JPanel panel;
+    private List<Set> squatSets;
+    private List<Set> deadliftSets;
+    private List<Set> benchSets;
+
+    public StrengthLevelWorker(JPanel panel, List<Set> squatSets, List<Set> deadliftSets, List<Set> benchSets) {
+      this.panel = panel;
+      this.squatSets = squatSets;
+      this.deadliftSets = deadliftSets;
+      this.benchSets = benchSets;
+    }
+
+    @Override
+    protected Void doInBackground() {
+      addStrengthStandard(panel, "Bench", calculateStrengthLevel("bench", benchSets));
+      addStrengthStandard(panel, "Deadlift", calculateStrengthLevel("deadlift", deadliftSets));
+      addStrengthStandard(panel, "Squat", calculateStrengthLevel("squat", squatSets));
+      return null;
+    }
+
+    @Override
+    protected void done() {
+      panel.revalidate();
+      panel.repaint();
+    }
   }
 
   private void add1RMInfo(JPanel panel, String exerciseName, List<Set> sets) {

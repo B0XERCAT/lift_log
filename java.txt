@@ -1,3 +1,0 @@
-1. WorkoutDialog에 File IO 추가 (User + Exercise Set)
-2. Input Validator 추가하기
-3. ResultDialog에 소켓 추가 (멀티쓰레딩)

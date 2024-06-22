@@ -161,7 +161,6 @@ public class UserInfoDialog extends JDialog {
         }
         user = new User(name, gender, Double.parseDouble(height), Double.parseDouble(weight));
         dispose();
-        System.out.println("User Information: " + user);
         WorkoutDialog workoutDialog = new WorkoutDialog(null, user, null, null, null);
         workoutDialog.setVisible(true);
       }
