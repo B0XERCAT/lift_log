@@ -7,8 +7,10 @@ import java.util.List;
 
 public class ResultDialog extends JDialog {
   private User user;
+
   public ResultDialog(Frame parent, List<Set> squatSets, List<Set> deadliftSets, List<Set> benchSets, User user) {
     super(parent, "Lift Log", true);
+
     this.user = user;
     setLayout(new BorderLayout());
     getContentPane().setBackground(Color.WHITE);
@@ -73,7 +75,11 @@ public class ResultDialog extends JDialog {
     infoButton.setFont(new Font("Arial", Font.BOLD, 14));
     infoButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        StandardInfoDialog standardInfoDialog = new StandardInfoDialog(parent);
+        double maxSquat1RM = calculateMax1RM(squatSets);
+        double maxDeadlift1RM = calculateMax1RM(deadliftSets);
+        double maxBench1RM = calculateMax1RM(benchSets);
+        StandardInfoDialog standardInfoDialog = new StandardInfoDialog(parent, maxSquat1RM, maxDeadlift1RM,
+        maxBench1RM, user);
         standardInfoDialog.setVisible(true);
       }
     });
@@ -165,7 +171,7 @@ public class ResultDialog extends JDialog {
     }
   }
 
-  private void add1RMInfo(JPanel panel, String exerciseName, List<Set> sets) {
+  private double add1RMInfo(JPanel panel, String exerciseName, List<Set> sets) {
     double max1RM = calculateMax1RM(sets);
     JLabel exerciseLabel = new JLabel(exerciseName + ":");
     exerciseLabel.setFont(new Font("Arial", Font.BOLD, 22));
@@ -174,6 +180,8 @@ public class ResultDialog extends JDialog {
     JLabel valueLabel = new JLabel(max1RM + "kg");
     valueLabel.setFont(new Font("Arial", Font.BOLD, 22));
     panel.add(valueLabel);
+
+    return max1RM;
   }
 
   private void addStrengthStandard(JPanel panel, String exerciseName, StrengthLevel.LevelColor level) {
