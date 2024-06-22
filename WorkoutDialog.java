@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,8 +54,29 @@ public class WorkoutDialog extends JDialog {
             }
         });
 
+        JButton saveButton = new JButton("Save");
+        saveButton.setForeground(Color.WHITE);
+        saveButton.setBackground(new Color(10, 100, 10));
+        saveButton.setFont(new Font("Arial", Font.BOLD, 14));
+        saveButton.addActionListener(e -> {
+            isValidFormat = true;
+            collectWorkoutDetails();
+            if (!isValidFormat) {
+                return;
+            }
+            saveWorkoutDetails();
+        });
+
+        JButton loadButton = new JButton("Load");
+        loadButton.setForeground(Color.WHITE);
+        loadButton.setBackground(new Color(100, 10, 10));
+        loadButton.setFont(new Font("Arial", Font.BOLD, 14));
+        loadButton.addActionListener(e -> loadWorkoutDetails(user));
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(completeButton);
+        buttonPanel.add(saveButton);
+        buttonPanel.add(loadButton);
 
         add(tabbedPane, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
@@ -116,13 +138,13 @@ public class WorkoutDialog extends JDialog {
             }
         });
 
-        // Add sets from the provided list
+// Add sets from the provided list
         if (sets != null && !sets.isEmpty()) {
             for (Set set : sets) {
                 addSet(panel, buttonPanel, set);
             }
         } else {
-            // Add default set if no sets are provided
+// Add default set if no sets are provided
             addSet(panel, buttonPanel);
         }
 
@@ -184,7 +206,7 @@ public class WorkoutDialog extends JDialog {
         gbc.gridx = 2;
         panel.add(repeatField, gbc);
 
-        // Move button panel down
+// Move button panel down
         gbc.gridx = 0;
         gbc.gridy = index + 4;
         gbc.gridwidth = 3;
@@ -209,7 +231,7 @@ public class WorkoutDialog extends JDialog {
                 panel.remove(component);
             }
 
-            // Move button panel up
+// Move button panel up
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.fill = GridBagConstraints.HORIZONTAL;
             gbc.insets = new Insets(5, 5, 5, 5);
@@ -280,7 +302,75 @@ public class WorkoutDialog extends JDialog {
             }
         }
     }
+
+    private void saveWorkoutDetails() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Workout Details");
+        int userSelection = fileChooser.showSaveDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
+                for (Set set : squatSets) {
+                    writer.write("Squat " + set.getWeight() + " " + set.getRepeats());
+                    writer.newLine();
+                }
+                for (Set set : deadliftSets) {
+                    writer.write("Deadlift " + set.getWeight() + " " + set.getRepeats());
+                    writer.newLine();
+                }
+                for (Set set : benchSets) {
+                    writer.write("Bench " + set.getWeight() + " " + set.getRepeats());
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Failed to save workout details.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void loadWorkoutDetails(User user) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Load Workout Details");
+        int userSelection = fileChooser.showOpenDialog(this);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToLoad = fileChooser.getSelectedFile();
+            List<Set> loadedSquatSets = new ArrayList<>();
+            List<Set> loadedDeadliftSets = new ArrayList<>();
+            List<Set> loadedBenchSets = new ArrayList<>();
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(fileToLoad))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(" ");
+                    if (parts.length == 3) {
+                        String exercise = parts[0];
+                        int weight = Integer.parseInt(parts[1]);
+                        int repeats = Integer.parseInt(parts[2]);
+                        Set set = new Set(weight, repeats);
+                        switch (exercise) {
+                            case "Squat":
+                                loadedSquatSets.add(set);
+                                break;
+                            case "Deadlift":
+                                loadedDeadliftSets.add(set);
+                                break;
+                            case "Bench":
+                                loadedBenchSets.add(set);
+                                break;
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Failed to load workout details.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            dispose();
+            WorkoutDialog newDialog = new WorkoutDialog(null, user, loadedSquatSets, loadedDeadliftSets,
+                    loadedBenchSets);
+            newDialog.setVisible(true);
+        }
+    }
 }
-
-
-
