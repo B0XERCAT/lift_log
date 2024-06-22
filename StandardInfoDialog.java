@@ -84,7 +84,13 @@ public class StandardInfoDialog extends JDialog {
   private void highlightTableCell(JTable table, String exercise, double max1RM) {
     Object[][] data = getData(exercise, user.getGender());
     int closestRow = findClosestRow(data, user.getWeight()); // Finds the closest row based on user's weight
-    int levelColumn = findLevelColumn(data, closestRow, max1RM); // Finds the appropriate column based on 1RM
+    final int[] levelColumn = { findLevelColumn(data, closestRow, max1RM) }; // Finds the appropriate column based on
+                                                                             // 1RM
+
+    // Ensure the levelColumn is within valid bounds
+    if (levelColumn[0] < 1 || levelColumn[0] >= table.getColumnCount()) {
+      levelColumn[0] = table.getColumnCount() - 1; // Default to the last column if invalid
+    }
 
     // Custom renderer to highlight the cell
     DefaultTableCellRenderer highlightRenderer = new DefaultTableCellRenderer() {
@@ -93,7 +99,7 @@ public class StandardInfoDialog extends JDialog {
           int row, int column) {
         Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         setHorizontalAlignment(JLabel.CENTER);
-        if (row == closestRow && column == levelColumn) {
+        if (row == closestRow && column == levelColumn[0]) {
           c.setBackground(new Color(200, 240, 255)); // Sets background color to highlight the cell
           c.setFont(new Font("Arial", Font.BOLD, 13)); // Sets font to bold
         } else {
@@ -104,7 +110,7 @@ public class StandardInfoDialog extends JDialog {
       }
     };
 
-    table.getColumnModel().getColumn(levelColumn).setCellRenderer(highlightRenderer); // Applies the custom renderer
+    table.getColumnModel().getColumn(levelColumn[0]).setCellRenderer(highlightRenderer); // Applies the custom renderer
   }
 
   // Retrieves data for the specified exercise and gender
@@ -170,7 +176,7 @@ public class StandardInfoDialog extends JDialog {
 
   // Finds the column corresponding to the user's strength level
   private int findLevelColumn(Object[][] data, int closestRow, double max1RM) {
-    int levelColumn = -1;
+    int levelColumn = 1; // Start with the first level column
     for (int i = 1; i < data[closestRow].length; i++) {
       double levelValue = (double) data[closestRow][i];
       if (max1RM >= levelValue) {
