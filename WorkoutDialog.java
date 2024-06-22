@@ -11,6 +11,7 @@ public class WorkoutDialog extends JDialog {
     private List<Set> deadliftSets;
     private List<Set> benchSets;
     private List<Set> squatSets;
+    private Boolean isValidFormat;
 
     public WorkoutDialog(Frame parent, User user) {
         super(parent, "Lift Log", true);
@@ -39,7 +40,11 @@ public class WorkoutDialog extends JDialog {
         completeButton.setFont(new Font("Arial", Font.BOLD, 14));
         completeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                isValidFormat = true;
                 collectWorkoutDetails();
+                if (isValidFormat == false) {
+                    return;
+                }
                 dispose();
                 ResultDialog resultDialog = new ResultDialog(null, squatSets, deadliftSets, benchSets, user);
                 resultDialog.setVisible(true);
@@ -241,12 +246,16 @@ public class WorkoutDialog extends JDialog {
                         JTextField repeatField = (JTextField) panel
                                 .getComponent(panel.getComponentZOrder(component) + 1);
                         try {
-                            int weight = Integer.parseInt(weightField.getText());
-                            int repeats = Integer.parseInt(repeatField.getText());
-                            currentSets.add(new Set(weight, repeats));
-                        } catch (NumberFormatException e) {
-                            // Handle the case where the user has not entered valid numbers
-                            System.out.println("Invalid input, skipping...");
+                            String weight = weightField.getText();
+                            String repeats = repeatField.getText();
+                            InputValidator.validateWeight(weight);
+                            InputValidator.validateRepeats(repeats);
+                            currentSets.add(new Set(Integer.parseInt(weight), Integer.parseInt(repeats)));
+                        } catch (InvalidInputException ex) {
+                            JOptionPane.showMessageDialog(null, ex.getMessage(), exerciseName + " Invalid Input",
+                                    JOptionPane.ERROR_MESSAGE);
+                            isValidFormat = false;
+                            return;
                         }
                     }
                 }

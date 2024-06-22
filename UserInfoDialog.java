@@ -130,10 +130,36 @@ public class UserInfoDialog extends JDialog {
     submitButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         String name = nameField.getText();
+        try {
+          InputValidator.validateName(name);
+        } catch (InvalidInputException ex) {
+          JOptionPane.showMessageDialog(null, ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+          return;
+        }
+
+        try {
+          InputValidator.validateGender(maleButton, femaleButton);
+        } catch (InvalidInputException ex) {
+          JOptionPane.showMessageDialog(null, ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+          return;
+        }
         User.Gender gender = maleButton.isSelected() ? User.Gender.MALE : User.Gender.FEMALE;
-        double height = Double.parseDouble(heightField.getText());
-        double weight = Double.parseDouble(weightField.getText());
-        user = new User(name, gender, height, weight);
+
+        String height = heightField.getText();
+        try {
+          InputValidator.validateHeight(height);
+        } catch (InvalidInputException ex) {
+          JOptionPane.showMessageDialog(null, ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+          return;
+        }
+        String weight = weightField.getText();
+        try {
+          InputValidator.validateWeight(weight);
+        } catch (InvalidInputException ex) {
+          JOptionPane.showMessageDialog(null, ex.getMessage(), "Invalid Input", JOptionPane.ERROR_MESSAGE);
+          return;
+        }
+        user = new User(name, gender, Double.parseDouble(height), Double.parseDouble(weight));
         dispose();
         System.out.println("User Information: " + user);
         WorkoutDialog workoutDialog = new WorkoutDialog(null, user);

@@ -7,6 +7,14 @@ public class Set {
     this.repeats = repeats;
   }
 
+  public int getWeight() {
+    return weight;
+  }
+
+  public int getRepeats() {
+    return repeats;
+  }
+
   public Integer calculate1RM() {
     // using Epley formula
     if (repeats == 1)
