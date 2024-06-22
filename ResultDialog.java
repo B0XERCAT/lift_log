@@ -59,6 +59,8 @@ public class ResultDialog extends JDialog {
 
     resultPanel.add(Box.createRigidArea(new Dimension(0, 20)));
 
+    resultPanel.add(createStrengthLevelLabel());
+
     JPanel strengthPanel = new JPanel(new GridLayout(3, 2, 0, 0));
     strengthPanel.setBackground(Color.WHITE);
     strengthPanel.setBorder(new EmptyBorder(30, 70, 30, 50));
@@ -79,7 +81,7 @@ public class ResultDialog extends JDialog {
         double maxDeadlift1RM = calculateMax1RM(deadliftSets);
         double maxBench1RM = calculateMax1RM(benchSets);
         StandardInfoDialog standardInfoDialog = new StandardInfoDialog(parent, maxSquat1RM, maxDeadlift1RM,
-        maxBench1RM, user);
+            maxBench1RM, user);
         standardInfoDialog.setVisible(true);
       }
     });
@@ -169,6 +171,27 @@ public class ResultDialog extends JDialog {
       panel.revalidate();
       panel.repaint();
     }
+  }
+
+  private JPanel createStrengthLevelLabel() {
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+    panel.setBackground(Color.WHITE);
+
+    StrengthLevel.LevelColor[] levels = StrengthLevel.LevelColor.values();
+    for (int i = 0; i < levels.length; i++) {
+      JLabel levelLabel = new JLabel(levels[i].getLabel());
+      levelLabel.setFont(new Font("Arial", Font.BOLD, 14));
+      levelLabel.setForeground(levels[i].getColor());
+      panel.add(levelLabel);
+
+      if (i < levels.length - 1) {
+        panel.add(new JLabel(" - "));
+      }
+    }
+
+    panel.setAlignmentX(CENTER_ALIGNMENT);
+    return panel;
   }
 
   private double add1RMInfo(JPanel panel, String exerciseName, List<Set> sets) {

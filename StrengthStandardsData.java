@@ -123,10 +123,12 @@ public class StrengthStandardsData {
       new StrengthStandards(120, 56, 80, 109, 143, 179)
   };
 
+  // Determine strength level based on gender, exercise, weight, and max 1RM
   public static StrengthLevel.LevelColor getStrengthLevel(User.Gender gender, String exercise, double bodyweight,
       double max1RM) {
     StrengthStandards[] standards = null;
 
+    // Selects the appropriate standards array based on gender and exercise
     switch (gender) {
       case MALE:
         switch (exercise.toLowerCase()) {
@@ -156,10 +158,12 @@ public class StrengthStandardsData {
         break;
     }
 
+    // Throws an exception
     if (standards == null) {
       throw new IllegalArgumentException("Invalid gender or exercise type");
     }
 
+    // Determines the strength level based on the body weight and 1RM
     for (StrengthStandards standard : standards) {
       if (bodyweight <= standard.getBodyweight()) {
         if (max1RM < standard.getNovice())

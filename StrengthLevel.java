@@ -1,10 +1,11 @@
 import java.awt.Color;
 
 public class StrengthLevel {
+    // Enum for level color
     public enum LevelColor {
         BEGINNER("Beginner", new Color(165, 42, 42)),
         NOVICE("Novice", Color.GRAY),
-        INTERMEDIATE("Intermediate", new Color(184, 134, 11)), 
+        INTERMEDIATE("Intermediate", new Color(184, 134, 11)),
         ADVANCED("Advanced", Color.GREEN),
         ELITE("Elite", Color.BLUE);
 
@@ -16,6 +17,7 @@ public class StrengthLevel {
             this.color = color;
         }
 
+        // getters for label and color
         public String getLabel() {
             return label;
         }

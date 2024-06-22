@@ -2,11 +2,13 @@ public class Set {
   int weight;
   int repeats;
 
+  // constructor to initialize Set object with weight and repeats
   Set(int weight, int repeats) {
     this.weight = weight;
     this.repeats = repeats;
   }
 
+  // getters for weight and repeats
   public int getWeight() {
     return weight;
   }
@@ -15,15 +17,19 @@ public class Set {
     return repeats;
   }
 
+  // setters for weight and repeats
+  public void setWeight(int weight) {
+    this.weight = weight;
+  }
+
+  public void setRepeats(int repeats) {
+    this.repeats = repeats;
+  }
+
+  // calculate 1RM based on weight and repeats using Epley formula
   public Integer calculate1RM() {
-    // using Epley formula
     if (repeats == 1)
       return weight;
     return (int) (weight * (1 + repeats / 30.0));
-  }
-
-  @Override
-  public String toString() {
-    return "Weight: " + weight + " kg, Repeats: " + repeats;
   }
 }

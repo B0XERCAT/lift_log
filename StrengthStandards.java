@@ -15,6 +15,7 @@ public class StrengthStandards {
     this.elite = elite;
   }
 
+  // getters for bodyweight, beginner, novice, intermediate, advanced, and elite
   public int getBodyweight() {
     return bodyweight;
   }
@@ -37,17 +38,5 @@ public class StrengthStandards {
 
   public int getElite() {
     return elite;
-  }
-
-  @Override
-  public String toString() {
-    return "StrengthStandards{" +
-        "bodyweight=" + bodyweight +
-        ", beginner=" + beginner +
-        ", novice=" + novice +
-        ", intermediate=" + intermediate +
-        ", advanced=" + advanced +
-        ", elite=" + elite +
-        '}';
   }
 }

@@ -7,8 +7,11 @@ public class InputValidator {
       throw new InvalidInputException("Name field is empty.");
     }
     // check if name contains non-alphabet characters
-    if (!name.matches("[a-zA-Z]+")) {
+    if (!name.matches("[a-zA-Z\\s]+")) {
       throw new InvalidInputException("Name field must not contain non-alphabet characters.");
+    }
+    if (name.length() > 15) {
+      throw new InvalidInputException("Name field must not exceed 15 characters.");
     }
   }
 
