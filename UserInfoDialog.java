@@ -1,7 +1,10 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.URL;
 
 public class UserInfoDialog extends JDialog {
   private JTextField nameField;
@@ -33,12 +36,19 @@ public class UserInfoDialog extends JDialog {
     logoPanel.setLayout(new BorderLayout());
 
     // Load and scale the logo image
-    ImageIcon logoIcon = new ImageIcon("assets/logo.png");
-    Image logoImage = logoIcon.getImage().getScaledInstance(240, 240, Image.SCALE_SMOOTH);
-    logoIcon = new ImageIcon(logoImage);
-    JLabel logoLabel = new JLabel(logoIcon);
-    logoLabel.setHorizontalAlignment(JLabel.CENTER);
-    logoPanel.add(logoLabel, BorderLayout.CENTER);
+    try {
+      URL logoUrl = new URL(
+          "https://github.com/B0XERCAT/lift_log/assets/97675977/91a3614f-5b4b-4bc9-9096-ac709b66211a");
+      Image logoImage = ImageIO.read(logoUrl).getScaledInstance(240, 240, Image.SCALE_SMOOTH);
+      JLabel logoLabel = new JLabel(new ImageIcon(logoImage));
+      logoLabel.setHorizontalAlignment(JLabel.CENTER);
+      logoPanel.add(logoLabel, BorderLayout.CENTER);
+    } catch (IOException e) {
+      e.printStackTrace();
+      JLabel errorLabel = new JLabel("Logo could not be loaded.");
+      errorLabel.setHorizontalAlignment(JLabel.CENTER);
+      logoPanel.add(errorLabel, BorderLayout.CENTER);
+    }
 
     // Create a panel for the title and subtitle
     JPanel titlePanel = new JPanel();

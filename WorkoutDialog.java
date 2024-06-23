@@ -1,3 +1,4 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -5,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
+import java.net.URL;
 
 public class WorkoutDialog extends JDialog {
     private JTabbedPane tabbedPane;
@@ -26,9 +29,15 @@ public class WorkoutDialog extends JDialog {
         isValidFormat = true;
 
         // Create panels for each exercise
-        JPanel benchPressPanel = createExercisePanel("bench.png", "Bench Press", benchSets);
-        JPanel deadliftPanel = createExercisePanel("deadlift.png", "Deadlift", deadliftSets);
-        JPanel squatPanel = createExercisePanel("squat.png", "Barbell Squat", squatSets);
+        JPanel benchPressPanel = createExercisePanel(
+                "https://github.com/B0XERCAT/lift_log/assets/97675977/afc1e956-0e8a-4a2d-a6eb-753c6a2725ba",
+                "Bench Press", benchSets);
+        JPanel deadliftPanel = createExercisePanel(
+                "https://github.com/B0XERCAT/lift_log/assets/97675977/16d017a2-668c-4bc2-b7e8-c6e1029e8373", "Deadlift",
+                deadliftSets);
+        JPanel squatPanel = createExercisePanel(
+                "https://github.com/B0XERCAT/lift_log/assets/97675977/0f2ca605-5cc3-435c-9a10-a7f4c42797d4",
+                "Barbell Squat", squatSets);
 
         exercisePanels.add(benchPressPanel);
         exercisePanels.add(deadliftPanel);
@@ -160,12 +169,17 @@ public class WorkoutDialog extends JDialog {
     }
 
     // Creates a JLabel with a resized image
-    private JLabel createImageLabel(String imagePath, int width, int height) {
-        ImageIcon originalIcon = new ImageIcon("assets/" + imagePath);
-        Image originalImage = originalIcon.getImage();
-        Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        ImageIcon resizedIcon = new ImageIcon(resizedImage);
-        return new JLabel(resizedIcon);
+    private JLabel createImageLabel(String imageUrl, int width, int height) {
+        try {
+            URL url = new URL(imageUrl);
+            Image originalImage = ImageIO.read(url);
+            Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            ImageIcon resizedIcon = new ImageIcon(resizedImage);
+            return new JLabel(resizedIcon);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new JLabel("Image not available");
+        }
     }
 
     // Adds a new set to the panel
