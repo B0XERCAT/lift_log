@@ -10,6 +10,7 @@ public abstract class ExercisePanel extends JPanel {
   protected List<Set> sets;
   protected String exerciseName;
 
+  // Constructor for the ExercisePanel class
   public ExercisePanel(String imageUrl, String exerciseName, List<Set> sets) {
     this.exerciseName = exerciseName;
     this.sets = sets;
@@ -19,6 +20,7 @@ public abstract class ExercisePanel extends JPanel {
     gbc.fill = GridBagConstraints.HORIZONTAL;
     gbc.insets = new Insets(5, 5, 5, 5);
 
+    // Add the exercise name as a title label
     JLabel titleLabel = new JLabel(exerciseName);
     titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
     titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -28,6 +30,7 @@ public abstract class ExercisePanel extends JPanel {
     add(titleLabel, gbc);
     gbc.gridwidth = 1;
 
+    // Add the exercise image
     JLabel imageLabel = createImageLabel(imageUrl, 240, 240);
     gbc.gridx = 0;
     gbc.gridy = 1;
@@ -35,6 +38,7 @@ public abstract class ExercisePanel extends JPanel {
     add(imageLabel, gbc);
     gbc.gridwidth = 1;
 
+    // Create and add buttons for adding and deleting sets
     JButton addSetButton = new JButton("Add Set");
     addSetButton.setBackground(new Color(10, 100, 10));
     addSetButton.setForeground(Color.WHITE);
@@ -52,9 +56,11 @@ public abstract class ExercisePanel extends JPanel {
     gbc.gridwidth = 3; // Adjust gridwidth for 3 columns
     add(buttonPanel, gbc);
 
+    // Add action listeners for the buttons
     addSetButton.addActionListener(e -> addSet(this, buttonPanel));
     deleteSetButton.addActionListener(e -> deleteSet(this, buttonPanel));
 
+    // If sets are provided, add them to the panel, otherwise add a default set
     if (sets != null && !sets.isEmpty()) {
       for (Set set : sets) {
         addSet(this, buttonPanel, set);
@@ -64,6 +70,7 @@ public abstract class ExercisePanel extends JPanel {
     }
   }
 
+  // Helper method to create a JLabel with a resized image from a URL
   private JLabel createImageLabel(String imageUrl, int width, int height) {
     try {
       URL url = new URL(imageUrl);
@@ -77,10 +84,12 @@ public abstract class ExercisePanel extends JPanel {
     }
   }
 
+  // Method to add a set to the panel without initial values
   protected void addSet(JPanel panel, JPanel buttonPanel) {
     addSet(panel, buttonPanel, null);
   }
 
+  // Method to add a set to the panel with optional initial values
   protected void addSet(JPanel panel, JPanel buttonPanel, Set set) {
     int index = getNextIndex(panel, buttonPanel);
 
@@ -88,6 +97,7 @@ public abstract class ExercisePanel extends JPanel {
     gbc.fill = GridBagConstraints.HORIZONTAL;
     gbc.insets = new Insets(5, 5, 5, 5);
 
+    // Add labels for weight and repeat at the first set
     if (index == 1) {
       JLabel weightLabel = new JLabel("Weight (kg)");
       weightLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -101,7 +111,7 @@ public abstract class ExercisePanel extends JPanel {
       repeatLabel.setForeground(Color.GRAY);
       gbc.gridx = 2;
       panel.add(repeatLabel, gbc);
-    } else if (index > 8) {
+    } else if (index > 8) { // Limit to 8 sets
       JOptionPane.showMessageDialog(this, "Maximum number of sets reached.", "Error", JOptionPane.ERROR_MESSAGE);
       return;
     }
@@ -109,6 +119,7 @@ public abstract class ExercisePanel extends JPanel {
     JTextField weightField = new JTextField(8);
     JTextField repeatField = new JTextField(8);
 
+    // Set initial values if provided
     if (set != null) {
       weightField.setText(String.valueOf(set.getWeight()));
       repeatField.setText(String.valueOf(set.getRepeats()));
@@ -124,6 +135,7 @@ public abstract class ExercisePanel extends JPanel {
     gbc.gridx = 2;
     panel.add(repeatField, gbc);
 
+    // Move button panel down
     gbc.gridx = 0;
     gbc.gridy = index + 4;
     gbc.gridwidth = 3;
@@ -133,6 +145,7 @@ public abstract class ExercisePanel extends JPanel {
     panel.repaint();
   }
 
+  // Method to delete the last set from the panel
   protected void deleteSet(JPanel panel, JPanel buttonPanel) {
     int index = getNextIndex(panel, buttonPanel) - 1;
 
@@ -148,6 +161,7 @@ public abstract class ExercisePanel extends JPanel {
         panel.remove(component);
       }
 
+      // Move button panel up
       GridBagConstraints gbc = new GridBagConstraints();
       gbc.fill = GridBagConstraints.HORIZONTAL;
       gbc.insets = new Insets(5, 5, 5, 5);
@@ -163,6 +177,7 @@ public abstract class ExercisePanel extends JPanel {
     }
   }
 
+  // Helper method to get the next index for adding a set
   protected int getNextIndex(JPanel panel, JPanel buttonPanel) {
     int maxIndex = 1;
     for (Component component : panel.getComponents()) {
@@ -177,18 +192,21 @@ public abstract class ExercisePanel extends JPanel {
   }
 }
 
+// Class for the Bench Press panel
 class BenchPressPanel extends ExercisePanel {
   public BenchPressPanel(String imageUrl, List<Set> sets) {
     super(imageUrl, "Bench Press", sets);
   }
 }
 
+// Class for the Deadlift panel
 class DeadliftPanel extends ExercisePanel {
   public DeadliftPanel(String imageUrl, List<Set> sets) {
     super(imageUrl, "Deadlift", sets);
   }
 }
 
+// Class for the Squat panel
 class SquatPanel extends ExercisePanel {
   public SquatPanel(String imageUrl, List<Set> sets) {
     super(imageUrl, "Barbell Squat", sets);
